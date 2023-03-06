@@ -7,7 +7,7 @@ from datetime import datetime
 class MapWindow(QMainWindow):
     def __init__(self,x,df):
         super().__init__()
-        self.setWindowTitle('Folium Map')
+        self.setWindowTitle('AquaSpot')
         color ={1:'green',-1:'red'}
         # Create a Folium map with latitude and longitude coordinates
         m = folium.Map(location=[48.85, 2.35], tiles=None, zoom_start=3)
@@ -65,7 +65,7 @@ class MapWindow(QMainWindow):
 class SampleWindow(QMainWindow):
     def __init__(self,x,df):
         super().__init__()
-        self.setWindowTitle('Sample Window')
+        self.setWindowTitle('AquaSpot')
 
         # Create a QVBoxLayout
         layout = QVBoxLayout()
