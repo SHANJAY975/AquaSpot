@@ -7,7 +7,7 @@ from datetime import datetime
 class MapWindow(QMainWindow):
     def __init__(self,x,df):
         super().__init__()
-        self.setWindowTitle('AquaSpot')
+        self.setWindowTitle('Folium Map')
         color ={1:'green',-1:'red'}
         # Create a Folium map with latitude and longitude coordinates
         m = folium.Map(location=[48.85, 2.35], tiles=None, zoom_start=3)
@@ -65,7 +65,7 @@ class MapWindow(QMainWindow):
 class SampleWindow(QMainWindow):
     def __init__(self,x,df):
         super().__init__()
-        self.setWindowTitle('AquaSpot')
+        self.setWindowTitle('Sample Window')
 
         # Create a QVBoxLayout
         layout = QVBoxLayout()
@@ -110,67 +110,98 @@ class SampleWindow(QMainWindow):
         # Create the horizontal layout and add widgets to it
         horizontal_layout = QHBoxLayout()
         horizontal_layout1 = QHBoxLayout()
+
         # Add widgets to the horizontal layout
         label = QLabel("Select a map plot")
-        
         label0 = QLabel("Vessel Type")
         button5 = QPushButton("Drifting_longlines")
         button6 = QPushButton("Fixed_gear")
         button7 = QPushButton("Pole_and_line")
         button8 = QPushButton("trollers")
         button9 = QPushButton("Purse_seines")
-
+        
+        # Connet buttons with Methods
         button5.clicked.connect(lambda: self.drifting_longlines())
         button6.clicked.connect(lambda: self.fixed_gear())
         button7.clicked.connect(lambda: self.pole_and_line())
         button8.clicked.connect(lambda: self.trollers())
         button9.clicked.connect(lambda: self.purse_seiners())
-
+        
+        # Add labels to the horizontal layout
         horizontal_layout.addWidget(label)
         horizontal_layout.addWidget(label0)
-
+        
+        # Add Widget to the horizontal layout
         horizontal_layout1.addWidget(button5)
         horizontal_layout1.addWidget(button6)
         horizontal_layout1.addWidget(button7)
         horizontal_layout1.addWidget(button8)
         horizontal_layout1.addWidget(button9)
+
         # Add the horizontal layout to the main layout
         layout.addLayout(horizontal_layout)
         layout.addLayout(horizontal_layout1)
-
+        
+        # Create a Central Widget
         central_widget = QWidget()
         central_widget.setLayout(layout)
 
         self.setCentralWidget(central_widget)
     
         
-
+    # Create fishing_window method to Display fishing vessels
     def fishing_window(self):
         self.map_window.deleteLater()
         self.map_window = MapWindow(1,df)
         self.horizontal_layout1.addWidget(self.map_window)
         
         
-        
+    # Create non_fishing_window method to Display Non fishing Vessels    
     def non_fishing_window(self):
         self.map_window.deleteLater()
         self.map_window = MapWindow(2,df)
         self.horizontal_layout1.addWidget(self.map_window)
-
+    
+    # Create both_fishing_non_fishing method to Display both fishing and non fishing Vessels
     def both_fishing_non_fishing(self):
         self.map_window.deleteLater()
         self.map_window = MapWindow(0,df)
         self.horizontal_layout1.addWidget(self.map_window)
+    
+    # Create drifting_longlines method to Display drifting_longline type Vessels
+    def drifting_longlines(self):
+        self.map_window.deleteLater()
+        self.map_window = MapWindow(3,df)
+        self.horizontal_layout1.addWidget(self.map_window)
+    
+    # Create fixed_gear method to Display Fixed Gear type  Vessels
+    def fixed_gear(self):
+        self.map_window.deleteLater()
+        self.map_window = MapWindow(4,df)
+        self.horizontal_layout1.addWidget(self.map_window)
+    
+    # Create pole_and_line method to Display Pole and Line type  Vessels
+    def pole_and_line(self):
+        self.map_window.deleteLater()
+        self.map_window = MapWindow(5,df)
+        self.horizontal_layout1.addWidget(self.map_window)
+    
+    # Create trollers method to Display Trollers type  Vessels
+    def trollers(self):
+        self.map_window.deleteLater()
+        self.map_window = MapWindow(6,df)
+        self.horizontal_layout1.addWidget(self.map_window)
 
+    # Create purse_seiners method to Display Purse Seiners type Vessels
+    def purse_seiners(self):
+        self.map_window.deleteLater()
+        self.map_window = MapWindow(7,df)
+        self.horizontal_layout1.addWidget(self.map_window)
 
 if __name__ == '__main__':
     app = QApplication([])
     df = pd.read_csv('Dataset/Dataset.csv')
-    df['date_time']=0  
+    df['date_time']=0   
     sample_window = SampleWindow(0,df)
     sample_window.show()
     app.exec()
-
-
-
-
