@@ -1,78 +1,14 @@
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget, QFileDialog,QMessageBox
+
+from PySide6.QtWidgets import QMainWindow,  QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget, QFileDialog,QMessageBox
 import pandas as pd
-import folium
-from datetime import datetime
-
-# Create Class MapWindow to Display map
-class MapWindow(QMainWindow):
-    def __init__(self,option ,df):
-        super().__init__()
-        self.setWindowTitle("Fishing spot")
-        color ={1:'green',-1:'red'}
-        # Create a Folium map with latitude and longitude coordinates
-        self.m = folium.Map(location=[48.85, 2.35], width='100%', height='100%', left='0%', top='0%', tiles=None, zoom_start=3)
-        folium.TileLayer('openstreetmap').add_to(self.m)
-        folium.TileLayer('stamenterrain', attr="stamenterrain").add_to(self.m)
-        folium.TileLayer('Stamenwatercolor', attr="Stamen Watercolor").add_to(self.m)
-        folium.TileLayer('Stamen Toner', attr="Stamen Toner" ).add_to(self.m)
-        folium.TileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', name='CartoDB.DarkMatter', attr="CartoDB.DarkMatter").add_to(self.m)
-        folium.TileLayer('cartodbpositron').add_to(self.m)
-        folium.TileLayer( "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", name='OpenTopoMap', attr='OpenTopoMap' ).add_to( self.m )
-
-        # add layers control over the map
-        folium.LayerControl().add_to(self.m)
-        for i in range(len(df['mmsi'])):
-            df.loc[:,"date_time"]=datetime.fromtimestamp(df['timestamp'][i])
-        new = df['date_time'].astype(str).str.split(" ", n=1, expand=True)
-        df['date'] = new[:][0]
-        df['time'] = new[:][1]
-        df['type'] = df['type'].str.lower()
-        # Plot the Marker
-        for index, row in df.iterrows():
-            if((row['speed']<3) and (row['distance_from_shore']>0) and (row['distance_from_port']>0)):
-                row['is_fishing']=1
-            tooltip = f"<b>MMSI: {row['mmsi']}</b><br>Speed: {row['speed']}<br>Latitude: {row['lat']} <br>Longitude: {row['lon']}<br>Course: {row['course']} <br>Distance_from_shore: {row['distance_from_shore']}<br> Distance_from_port: {row['distance_from_port']}<br> Date :{row['date']}<br> Time:{row['time']} <br> Type: {row['type']}"
-            
-            if( option == 1):
-                if(row['is_fishing'] == 1):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']],icon="info-sign")).add_to(self.m)
-            elif( option == 2):
-                if(row['is_fishing'] == -1):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            elif( option == 0):
-                folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            elif( option == 3):
-                if(row['type'] == "drifting_longlines"):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            elif( option == 4):
-                if(row['type'] == "fixed_gear"):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            elif( option == 5):
-                if(row['type'] == "pole_and_line"):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            elif( option == 6):
-                if(row['type'] == "trollers"):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            elif( option == 7):
-                if(row['type'] == "purse_seines"):
-                    folium.Marker(radius=100, location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-            else:
-                folium.Marker(location=[row['lat'], row['lon']], tooltip=tooltip, icon=folium.Icon(color=color[row['is_fishing']], icon="info-sign")).add_to(self.m)
-
-        # Convert the Folium map to HTML
-        self.map_html = self.m._repr_html_()
-        # Create a webview widget and set the HTML content to the Folium map HTML
-        webview = QWebEngineView()
-        webview.setHtml(self.map_html)
-
-        self.setCentralWidget(webview)
+from Mapwindow import MapWindow
+from PySide6.QtWidgets import QApplication
 
 # Create class SampleWindow to Display window
-class SampleWindow(QMainWindow):
+class Main_window(QMainWindow):
     def __init__( self, option, df ):
         super().__init__()
-        self.setWindowTitle('Map Window')
+        self.setWindowTitle('AquaSpot')
         self.setMinimumSize(1200, 800)
 
 
@@ -87,9 +23,8 @@ class SampleWindow(QMainWindow):
         
         # Create Horizontal Layout 
         self.horizontal_layout1 = QHBoxLayout()
-
-
         Vertical_main_layout.addLayout(self.horizontal_layout1)
+
         # Create QHBoxLayout
         self.horizontal_layout2 = QHBoxLayout()
         
@@ -184,15 +119,15 @@ class SampleWindow(QMainWindow):
         horizontal_layout0 = QHBoxLayout()
         View_data = QLabel("Click to View your data")
         Import = QPushButton("Import")
-       
+        Download = QPushButton("Download plot")
 
         Import.clicked.connect(lambda: self.import_data(df))
-        
+        Download.clicked.connect(lambda: self.download())
 
         # Add widgets to Layout
         horizontal_layout0.addWidget(View_data)
         horizontal_layout0.addWidget(Import)
-        
+        horizontal_layout0.addWidget(Download)
 
         #Add QHBoxLayout to main Layout
         Vertical_main_layout.addLayout(horizontal_layout0)
@@ -296,10 +231,9 @@ class SampleWindow(QMainWindow):
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with Type ")
                 message_box1.exec()
-            else:  
-                print(df.head())
-                sample_window.close()
-                sample_window1 = SampleWindow(0,df)
+            else:
+                sample_window.deleteLater()
+                sample_window1 = Main_window(0,df)
                 sample_window1.show()  
         
     # Create fishing_window to Display fishing vessels
@@ -320,12 +254,34 @@ class SampleWindow(QMainWindow):
         self.map_window = MapWindow(0,df)
         self.horizontal_layout1.addWidget(self.map_window)
     
+    # Create download method to download the map plot
+    def download(self):
+
+        # Open file dialog to select file path and name
+        self.map_html = self.map_window.get_html()
+        self.horizontal_layout1.addWidget(self.map_window)
+        
+        options = QFileDialog.Options()
+        options = QFileDialog.DontUseNativeDialog
+        
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save map plot", "", "HTML Files (*.html)", options=options)
+        
+        # Add .html extension if not already included
+        if not file_name.endswith('.html'):
+            file_name += '.html'
+        
+        # Save map plot to file
+        self.map_html.save(file_name)
+        message_box2 = QMessageBox()
+        message_box2.setWindowTitle("Download")
+        message_box2.setText("Current map window is downloaded")
+        message_box2.exec()
 if __name__ == '__main__':
-    app = QApplication([]) 
-    df = pd.read_csv('Dataset/Dataset.csv')
-    df['date_time']=0 
-    df.columns = df.columns.str.lower()
-    df.columns = df.columns.str.replace(" ","_")
-    sample_window = SampleWindow(0,df)
-    sample_window.show()
-    app.exec()
+        app = QApplication([]) 
+        df = pd.read_csv('Dataset/Dataset.csv')
+        df['date_time']=0 
+        df.columns = df.columns.str.lower()
+        df.columns = df.columns.str.replace(" ","_")
+        sample_window = Main_window(0,df)
+        sample_window.show()
+        app.exec()
