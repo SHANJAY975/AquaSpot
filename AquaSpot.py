@@ -16,7 +16,7 @@ class Main_window(QMainWindow):
         Vertical_main_layout = QVBoxLayout()
        
         # calling MapWindow Function
-        self.map_window = MapWindow( option, df )
+        self.map_window = MapWindow(option, df)
         
         # Add map_window to Vertical Layout
         Vertical_main_layout.addWidget(self.map_window)
@@ -25,82 +25,102 @@ class Main_window(QMainWindow):
         self.horizontal_layout1 = QHBoxLayout()
         Vertical_main_layout.addLayout(self.horizontal_layout1)
 
-        # Create QHBoxLayout
-        self.horizontal_layout2 = QHBoxLayout()
+         # Create QHBoxLayout for Label and Button 
+        label_and_button_layout = QHBoxLayout()
         
-        # Add label and button 
-        label_view = QLabel("Select View Options")
+        # Create QVBoxLayout for Adding Labels
+        label_layout = QVBoxLayout()
+
+        # Add QLabel for Description
+        description_label = QLabel("Select View Options")
+        view_label = QLabel("Vessel Type")
+        View_data = QLabel("Click to View your data")
+        
+        # Add Labels to label_layout
+        label_layout.addWidget(description_label)
+        label_layout.addWidget(view_label)
+        label_layout.addWidget(View_data)
+        
+        # Add label_layout to label_and_button_layout
+        label_and_button_layout.addLayout(label_layout)
+        
+        # Create QVBoxLayout for adding Buttons
+        button_layout = QVBoxLayout()
+        
+        # Create QHBoxLayout for adding Buttons
+        fishing_info_layout = QHBoxLayout()
+        
+        # Create QPushButton 
         fishing = QPushButton("Fishing")
-        fishing.setToolTip("Click to view Fishing Vessels")
-        fishing.setToolTipDuration(1000)
-
         non_fishing = QPushButton("Non Fishing")
-        non_fishing.setToolTip("Click to view Non Fishing Vessels")
-        non_fishing.setToolTipDuration(1000)
-
         fishing_and_non_fishing = QPushButton("Fishing and Non Fishing")
-        fishing_and_non_fishing.setToolTip("Click to view All Vessels")
-        fishing_and_non_fishing.setToolTipDuration(1000)
 
-       
         # Add function to display the map
         fishing.clicked.connect(lambda: self.fishing_window(df))
         non_fishing.clicked.connect(lambda: self.non_fishing_window(df))
         fishing_and_non_fishing.clicked.connect(lambda: self.both_fishing_and_non_fishing(df))
         
+        # Add Wigets to fishing_info_layout
+        fishing_info_layout.addWidget(fishing)
+        fishing_info_layout.addWidget(non_fishing)       
+        fishing_info_layout.addWidget(fishing_and_non_fishing)
+ 
+        # Add fishing_info_layout to button_layout
+        button_layout.addLayout(fishing_info_layout)
         
-        #Adding buttons to horizontal layout 
-        self.horizontal_layout2.addWidget(label_view)
-        self.horizontal_layout2.addWidget(fishing)
-        self.horizontal_layout2.addWidget(non_fishing)
-        self.horizontal_layout2.addWidget(fishing_and_non_fishing)
-
-        # Add the horizontal layout to the main layout
-        Vertical_main_layout.addLayout(self.horizontal_layout2)
-        
-    
-        # Create the horizontal layout and add widgets to it
-        
+        # Create QHBoxLayout for adding Vessel type options
         Vessel_type_layout = QHBoxLayout()
-        vessel_type_description = QLabel("Vessel Type")
+
+        # Create QComboBox to add Vessel types
         Vessel_type = QComboBox()
+
+        # Add Types of Vessel to Vessel_type ComboBox
         Vessel_type.addItems([ "Drifting_longlines", "Fixed_gear", "Pole_and_line", "trollers", "Purse_seines", "All_Vessels" ])
 
         # The default signal from currentIndexChanged sends the index
         Vessel_type.currentIndexChanged.connect(self.index_changed)
-        Vessel_type_layout.addWidget(vessel_type_description)
+        
+        # Add Wiget to Vessel_type_layout
         Vessel_type_layout.addWidget(Vessel_type)
+
+        # Add Vessel_type_layout to button_layout
+        button_layout.addLayout(Vessel_type_layout)
        
 
-        # Add the horizontal layout to the main layout
-
-        Vertical_main_layout.addLayout(Vessel_type_layout)
+        # Create QHBoxLayout for adding import and download buttons
+        import_and_download_layout = QHBoxLayout()
         
-        
-        # Create QHBoxLayout to import data
-        horizontal_layout0 = QHBoxLayout()
-        View_data = QLabel("Click to View your data")
+        # Create QPushbutton for import and Download button
         Import = QPushButton("Import")
         Download = QPushButton("Download plot")
-
-        Import.clicked.connect(lambda: self.import_data(df))
+        
+        # Call methods to import and Download 
+        Import.clicked.connect(lambda: self.import_data())
         Download.clicked.connect(lambda: self.download())
 
-        # Add widgets to Layout
-        horizontal_layout0.addWidget(View_data)
-        horizontal_layout0.addWidget(Import)
-        horizontal_layout0.addWidget(Download)
+        # Add Widgets to import_and_download_layout 
+        import_and_download_layout.addWidget(Import)
+        import_and_download_layout.addWidget(Download)
+        
+        # Add import_and_download_layout to button_layout 
+        button_layout.addLayout(import_and_download_layout)
 
-        #Add QHBoxLayout to main Layout
-        Vertical_main_layout.addLayout(horizontal_layout0)
+        # Add button_layout to label_and_button_layout
+        label_and_button_layout.addLayout(button_layout)
 
+        # Add label_and_button_layout to Vertical_main_layout
+        Vertical_main_layout.addLayout(label_and_button_layout)
 
+        # Create QWidget
         central_widget = QWidget()
+
+        # Set Main layout to Widget
         central_widget.setLayout(Vertical_main_layout)
-
         self.setCentralWidget(central_widget)
-
-    def index_changed(self, i): # i is an int
+ 
+    # Create index_changed method to call vessel type methods
+     # i is an int
+    def index_changed(self, i):
         if (i == 0):
             self.drifting_longlines(self.df)
         elif ( i == 1):
@@ -152,7 +172,7 @@ class Main_window(QMainWindow):
         self.horizontal_layout1.addWidget(self.map_window)
 
     # Create import_data function to import data from the user
-    def import_data(self,df):
+    def import_data(self):
         # open a file dialog to select the data file to import
         message_box = QMessageBox()
         message_box.setWindowTitle("Import CSV")
@@ -211,7 +231,7 @@ class Main_window(QMainWindow):
                 message_box1.exec()
             else:
                 sample_window.deleteLater()
-                sample_window1 = Main_window(0,df)
+                sample_window1 = Main_window(0, df)
                 sample_window1.show()  
         
     # Create fishing_window to Display fishing vessels
