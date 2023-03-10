@@ -1,5 +1,5 @@
 
-from PySide6.QtWidgets import QMainWindow,  QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget, QFileDialog,QMessageBox
+from PySide6.QtWidgets import QMainWindow,  QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget, QFileDialog,QMessageBox, QComboBox
 import pandas as pd
 from Mapwindow import MapWindow
 from PySide6.QtWidgets import QApplication
@@ -11,7 +11,7 @@ class Main_window(QMainWindow):
         self.setWindowTitle('AquaSpot')
         self.setMinimumSize(1200, 800)
 
-
+        self.df = df
         # Create a QVBoxLayout
         Vertical_main_layout = QVBoxLayout()
        
@@ -60,60 +60,22 @@ class Main_window(QMainWindow):
         
     
         # Create the horizontal layout and add widgets to it
-        horizontal_layout = QHBoxLayout()
-        horizontal_layout1 = QHBoxLayout()
-
-        # Add widgets to the horizontal layout
-        Vessel_type = QLabel("Vessel Type")
-        Drifting_longlines = QPushButton("Drifting_longlines")
-        Drifting_longlines.setToolTip("Click to view Drifting_longlines Vessels")
-        Drifting_longlines.setToolTipDuration(1000)
-
-        Fixed_gear = QPushButton("Fixed_gear")
-        Fixed_gear.setToolTip("Click to view Fixed_gear")
-        Fixed_gear.setToolTipDuration(1000)
-
-        Pole_and_line = QPushButton("Pole_and_line")
-        Pole_and_line.setToolTip("Click to view Pole_and_line")
-        Pole_and_line.setToolTipDuration(1000)
         
-        Trollers = QPushButton("trollers")
-        Trollers.setToolTip("Click to view trollers")
-        Trollers.setToolTipDuration(1000)
-        
-        Purse_seines = QPushButton("Purse_seines")
-        Purse_seines.setToolTip("Click to view Purse_seines")
-        Purse_seines.setToolTipDuration(1000)
-        
-        All_vessels = QPushButton("ALL Types")
-        All_vessels.setToolTip("Click to view All types of Vessels")
-        All_vessels.setToolTipDuration(1000)
+        Vessel_type_layout = QHBoxLayout()
+        vessel_type_description = QLabel("Vessel Type")
+        Vessel_type = QComboBox()
+        Vessel_type.addItems([ "Drifting_longlines", "Fixed_gear", "Pole_and_line", "trollers", "Purse_seines", "All_Vessels" ])
 
-        Drifting_longlines.clicked.connect(lambda: self.drifting_longlines(df))
-        Fixed_gear.clicked.connect(lambda: self.fixed_gear(df))
-        Pole_and_line.clicked.connect(lambda: self.pole_and_line(df))
-        Trollers.clicked.connect(lambda: self.trollers(df))
-        Purse_seines.clicked.connect(lambda: self.purse_seiners(df))
-        All_vessels.clicked.connect(lambda: self.all_boats(df))
-
-        # Add Label to the horizontal Layout
-        # Add stretchable space to left side of button
-        horizontal_layout.addStretch(1)  
-        horizontal_layout.addWidget(Vessel_type)
-        horizontal_layout.addStretch(1)
-        
-        
-        # Add buttons to the Horizontal Layout
-        horizontal_layout1.addWidget(Drifting_longlines)
-        horizontal_layout1.addWidget(Fixed_gear)
-        horizontal_layout1.addWidget(Pole_and_line)
-        horizontal_layout1.addWidget(Trollers)
-        horizontal_layout1.addWidget(Purse_seines)
-        horizontal_layout1.addWidget(All_vessels)
+        # The default signal from currentIndexChanged sends the index
+        Vessel_type.currentIndexChanged.connect(self.index_changed)
+        Vessel_type_layout.addWidget(vessel_type_description)
+        Vessel_type_layout.addWidget(Vessel_type)
+       
 
         # Add the horizontal layout to the main layout
-        Vertical_main_layout.addLayout(horizontal_layout)
-        Vertical_main_layout.addLayout(horizontal_layout1)
+
+        Vertical_main_layout.addLayout(Vessel_type_layout)
+        
         
         # Create QHBoxLayout to import data
         horizontal_layout0 = QHBoxLayout()
@@ -137,6 +99,22 @@ class Main_window(QMainWindow):
         central_widget.setLayout(Vertical_main_layout)
 
         self.setCentralWidget(central_widget)
+
+    def index_changed(self, i): # i is an int
+        if (i == 0):
+            self.drifting_longlines(self.df)
+        elif ( i == 1):
+            self.fixed_gear(self.df)
+        elif ( i == 2):
+            self.pole_and_line(self.df)
+        elif ( i == 3):
+            self.trollers(self.df)
+        elif ( i == 4):
+            self.purse_seiners(self.df)
+        else:
+            self.all_boats(self.df)
+
+
     # Create drifting_longlines function to Display drifting_longline vessels
     def drifting_longlines(self,df):
         self.map_window.deleteLater()
@@ -276,6 +254,7 @@ class Main_window(QMainWindow):
         message_box2.setWindowTitle("Download")
         message_box2.setText("Current map window is downloaded")
         message_box2.exec()
+
 if __name__ == '__main__':
         app = QApplication([]) 
         df = pd.read_csv('Dataset/Dataset.csv')
