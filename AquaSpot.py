@@ -1,4 +1,3 @@
-
 from PySide6.QtWidgets import QMainWindow,  QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget, QFileDialog,QMessageBox, QComboBox
 import pandas as pd
 from Mapwindow import MapWindow
@@ -193,15 +192,24 @@ class Main_window(QMainWindow):
 
             # Converting column names to Lower case
             df.columns = df.columns.str.lower()
+
+            # Replacing Spaces in column names with _
             df.columns = df.columns.str.replace(" ","_")
             
+            # Create empty list
             x = []
+
             for i in range(len(df.columns)):
+                # Set unwanted columns as unknown and append it to list
                 if(df.columns[i] not in ['mmsi', 'timestamp', 'speed', 'distance_from_port','distance_from_shore', 'lat', 'lon', 'type', 'course', 'is_fishing', 'source' ]):
                     x.append("unknown")
                 else:
                     x.append(df.columns[i])
+            
+            # Set Created list as column names
             df = pd.DataFrame(df.values, columns=x)
+
+            # Set column as classified column names
             df.columns = Classifier(df.columns)
 
             # Check Whether mmsi is Present in the column
