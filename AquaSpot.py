@@ -185,8 +185,11 @@ class Main_window(QMainWindow):
             # save the data to the new file
             df = pd.read_csv(file_path)
             df['date_time']=0
+
+            # Converting column names to Lower case
             df.columns = df.columns.str.lower()
             df.columns = df.columns.str.replace(" ","_")
+            
             
             if not('mmsi' in df.columns):
                 message_box1 = QMessageBox()
@@ -276,7 +279,7 @@ class Main_window(QMainWindow):
 
 if __name__ == '__main__':
         app = QApplication([]) 
-        df = pd.read_csv('Dataset/Sample_Dataset.csv')
+        df = pd.read_csv('Dataset/Dataset.csv')
         df['date_time']=0 
         df.columns = df.columns.str.lower()
         df.columns = df.columns.str.replace(" ","_")
