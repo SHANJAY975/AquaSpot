@@ -3,6 +3,8 @@ from PySide6.QtWidgets import QMainWindow,  QVBoxLayout, QHBoxLayout, QLabel, QP
 import pandas as pd
 from Mapwindow import MapWindow
 from PySide6.QtWidgets import QApplication
+from Model import Classifier
+
 
 # Create class SampleWindow to Display window
 class Main_window(QMainWindow):
@@ -193,6 +195,14 @@ class Main_window(QMainWindow):
             df.columns = df.columns.str.lower()
             df.columns = df.columns.str.replace(" ","_")
             
+            x = []
+            for i in range(len(df.columns)):
+                if(df.columns[i] not in ['mmsi', 'timestamp', 'speed', 'distance_from_port','distance_from_shore', 'lat', 'lon', 'type', 'course', 'is_fishing', 'source' ]):
+                    x.append("unknown")
+                else:
+                    x.append(df.columns[i])
+            df = pd.DataFrame(df.values, columns=x)
+            df.columns = Classifier(df.columns)
 
             # Check Whether mmsi is Present in the column
 
