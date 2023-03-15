@@ -10,8 +10,11 @@ class MapWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("AquaSpot")
         color = {1:'green',-1:'red'}
+        
         # Create a Folium map with latitude and longitude coordinates
         self.m = folium.Map(location=[48.85, 2.35], width='100%', height='100%', left='0%', top='0%', tiles=None, zoom_start=3)
+        
+        # Add TileLayer to the folium map
         folium.TileLayer('openstreetmap').add_to(self.m)
         folium.TileLayer('stamenterrain', attr="stamenterrain").add_to(self.m)
         folium.TileLayer('Stamenwatercolor', attr="Stamen Watercolor").add_to(self.m)
@@ -22,6 +25,9 @@ class MapWindow(QMainWindow):
 
         # add layers control over the map
         folium.LayerControl().add_to(self.m)
+        
+        df['date_time']=0
+        # Change timestamp to date and time
         for i in range(len(df['mmsi'])):
             df.loc[:,"date_time"]=datetime.fromtimestamp(df['timestamp'][i])
         new = df['date_time'].astype(str).str.split(" ", n=1, expand=True)

@@ -16,7 +16,7 @@ class Main_window(QMainWindow):
         Vertical_main_layout = QVBoxLayout()
        
         # calling MapWindow Function
-        self.map_window = MapWindow( option, df )
+        self.map_window = MapWindow(option, df)
         
         # Add map_window to Vertical Layout
         Vertical_main_layout.addWidget(self.map_window)
@@ -26,6 +26,7 @@ class Main_window(QMainWindow):
         Vertical_main_layout.addLayout(self.horizontal_layout1)
 
         # Create QHBoxLayout for Label and Button 
+
         label_and_button_layout = QHBoxLayout()
         
         # Create QVBoxLayout for Adding Labels
@@ -118,8 +119,10 @@ class Main_window(QMainWindow):
         central_widget.setLayout(Vertical_main_layout)
         self.setCentralWidget(central_widget)
 
+ 
     # Create index_changed method to call vessel type methods
-    def index_changed(self, i): # i is an int
+     # i is an int
+    def index_changed(self, i):
         if (i == 0):
             self.drifting_longlines(self.df)
         elif ( i == 1):
@@ -190,50 +193,67 @@ class Main_window(QMainWindow):
             df.columns = df.columns.str.lower()
             df.columns = df.columns.str.replace(" ","_")
             
-            
+
+            # Check Whether mmsi is Present in the column
+
             if not('mmsi' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file with mmsi ")
                 message_box1.exec()
+
+            # Check Whether timestamp is Present in the column
             elif not('timestamp' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with timestamp")
                 message_box1.exec()
+            # Check Whether distance_from_shore is Present in the column
+
             elif not('distance_from_shore'):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with distance_from_shore ")
                 message_box1.exec()
+
+            # Check Whether distance_from_port is Present in the column
+
             elif not('distance_from_port' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with distance_from_port")
                 message_box1.exec()
+
+            # Check Whether speed is Present in the column
             elif not('speed' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with speed ")
                 message_box1.exec()
+
+            # Check Whether lat is present in column
             elif not('lat' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with lat ")
-                message_box1.exec()
+
+            # Check Whether lon is present in column
             elif not('lon' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with Following data lon ")
                 message_box1.exec()
+
+            # Check Whether type is present in column
             elif not('type' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with Type ")
                 message_box1.exec()
+            # Create new Window and Plot the data
             else:
                 sample_window.deleteLater()
-                sample_window1 = Main_window(0,df)
+                sample_window1 = Main_window(0, df)
                 sample_window1.show()  
         
     # Create fishing_window to Display fishing vessels
