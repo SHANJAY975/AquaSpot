@@ -190,42 +190,56 @@ class Main_window(QMainWindow):
             df.columns = df.columns.str.lower()
             df.columns = df.columns.str.replace(" ","_")
             
-            
+            # Check Whether mmsi is present in column
             if not('mmsi' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file with mmsi ")
                 message_box1.exec()
+
+            # Check Whether timestamp is present in column
             elif not('timestamp' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with timestamp")
                 message_box1.exec()
+
+            # Check Whether distance_from_shore is present in column
             elif not('distance_from_shore'):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with distance_from_shore ")
                 message_box1.exec()
+            
+            # Check Whether distance_from_port is present in column
             elif not('distance_from_port' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with distance_from_port")
                 message_box1.exec()
+
+            # Check Whether speed is present in column
             elif not('speed' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with speed ")
                 message_box1.exec()
+            
+            # Check Whether lat is present in column
             elif not('lat' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with lat ")
                 message_box1.exec()
+
+            # Check Whether lon is present in column
             elif not('lon' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
                 message_box1.setText("Please select a CSV file to import with Following data lon ")
                 message_box1.exec()
+            
+            # Check Whether type is present in column
             elif not('type' in df.columns):
                 message_box1 = QMessageBox()
                 message_box1.setWindowTitle("Import CSV")
